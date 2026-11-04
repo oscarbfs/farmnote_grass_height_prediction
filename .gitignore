@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Secrets and private runtime configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Raw/private data must never be committed
+data/raw/
+data/private/
+data/*_raw.*
+data/*_original.*
+*.sqlite
+*.sqlite3
+*.db
+
+# Generated experiment artifacts. Curated reference CSVs remain tracked.
+results/reproduced/
+results/smoke/
+*.joblib
+*.pkl
+*.pickle
+
+# Logs and temporary files
+*.log
+*.tmp
+~$*

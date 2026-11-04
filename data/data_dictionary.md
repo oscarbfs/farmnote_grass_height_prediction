@@ -1,0 +1,120 @@
+# Dicionário de dados do conjunto analítico
+
+## Escopo e convenções
+
+Este dicionário descreve o esquema de **77 colunas** exportado pelo DTO `PasturageDTO` e presente no artefato analítico usado na execução de 1º de junho de 2026. A unidade de análise é um evento de pastejo: o intervalo entre duas medições consecutivas de altura no mesmo piquete. O alvo é `end_grass_height_avg_cm`.
+
+Os tipos abaixo são tipos lógicos. Como o arquivo é CSV, todos os valores chegam como texto e são convertidos pelo carregador. Salvo indicação em contrário, as colunas são anuláveis no DTO original.
+
+- **Feature**: entra no experimento completo depois das exclusões; são 60 colunas.
+- **Alvo**: saída a ser predita e nunca entra em `X`.
+- **Excluída**: removida antes do ajuste por identificação, vazamento ou proxy; a implementação também exclui o alvo.
+- **Metadado**: não integra o catálogo de features do DTO.
+- **Ablação = Sim**: o nome satisfaz um dos prefixos `start_bovine_`, `end_bovine_`, `delta_bovine_`, `during_`, `avg_seconds_from_`, `avg_time_bovine_`, `extra_paddocks_`, `bovines_per_` ou `bovine_weight_per_`, ou é exatamente `duration_seconds`. A regra é aplicada mesmo quando a coluna já seria excluída por vazamento. Restam 16 features no experimento sem movimentação/ocupação.
+- **Risco temporal**: a coluna não foi classificada como vazamento pela implementação histórica, mas seu valor foi calculado com observações do decorrer ou do fim do evento. Ela só seria válida numa previsão feita no início se fosse substituída por informação efetivamente planejada ou prevista.
+- **Pseudonimização**: é estável dentro do arquivo, preserva as relações entre linhas e não publica a tabela de correspondência. Não equivale a anonimização irreversível.
+
+As datas são preservadas porque mês, dia da semana, dia do ano e sazonalidade fazem parte do experimento. Elas continuam sendo quase-identificadores e exigem revisão humana antes da publicação.
+
+## Colunas
+
+| # | Coluna | Tipo lógico | Grupo | Descrição | Unidade | Papel no experimento completo | Vazamento ou proxy | Ablação | Disponibilidade no início do evento | Tratamento para publicação |
+|---:|---|---|---|---|---|---|---|---|---|---|
+| 1 | `id` | string | Identificação | Identificador da linha persistida. Não participa de `feature_names()`. | — | Metadado | Não aplicável; nunca é candidata | Não | Metadado | Pseudonimizar como `row_NN` |
+| 2 | `user_id` | string categórica | Identificação | Identificador do usuário/origem dos registros. | — | Excluída | Sim — identificador e possível proxy da origem | Não | Metadado | Pseudonimizar como `source_NN` |
+| 3 | `paddock_id` | string categórica | Piquete | Identificador estável do piquete; pode representar diferenças históricas entre áreas. | — | Feature | Não no código; pode limitar generalização para piquetes novos | Não | Pré-evento | Pseudonimizar como `paddock_NN`, preservando a relação entre eventos |
+| 4 | `pasturage_event_id` | string | Identificação | Identificador composto do evento; no construtor original deriva do piquete e dos timestamps inicial/final. | — | Metadado / excluída | Sim — identificador do evento; já não pertence ao catálogo de features | Não | Metadado | Pseudonimizar como `event_NN`; não publicar a composição original |
+| 5 | `snapshot_type` | string categórica | Snapshot | Tipo do recorte temporal. No dataset efetivo é fixado como `event`. | — | Excluída | Sim — proxy do recorte final e constante nesta versão | Não | Pós-evento | Preservar o valor científico; não contém ID |
+| 6 | `snapshot_progress` | float | Snapshot | Progresso normalizado do recorte. No dataset efetivo é `1.0`. | proporção [0, 1] | Excluída | Sim — indica o recorte final | Não | Pós-evento | Preservar |
+| 7 | `snapshot_cutoff_at` | datetime ISO 8601 | Snapshot | Instante de corte do recorte; no dataset efetivo coincide com o fim do evento. | data/hora | Excluída | Sim — proxy temporal do término | Não | Pós-evento | Preservar somente após revisão de quase-identificação temporal |
+| 8 | `size_m2` | float | Piquete | Área vigente do piquete no início; usa o último registro de área até o início ou o valor cadastral. | m² | Feature | Não | Não | Pré-evento | Preservar |
+| 9 | `started_at` | datetime ISO 8601 | Tempo | Data/hora da medição que inicia o evento. | data/hora | Feature | Não | Não | Pré-evento | Preservar somente após revisão de quase-identificação temporal |
+| 10 | `finished_at` | datetime ISO 8601 | Tempo | Data/hora da medição final. No código é observada; para uso prospectivo teria de ser planejada. | data/hora | Feature | Não no código; risco temporal | Não | Planejada ou pós-evento | Preservar somente após revisão de quase-identificação temporal |
+| 11 | `duration_seconds` | float | Tempo / ocupação | Diferença entre `finished_at` e `started_at`. | s | Feature | Não no código; risco temporal se não planejada | Sim — regra exata | Planejada ou pós-evento | Preservar |
+| 12 | `temp_avg_c` | float | Clima | Média dos registros de temperatura cujas datas caem no intervalo, inclusive os dias das extremidades. | °C | Feature | Não no código; clima histórico observado, não previsão | Não | Pós-evento; substituir por previsão em uso prospectivo | Preservar |
+| 13 | `temp_max_c` | float | Clima | Máximo dos registros de temperatura no intervalo. | °C | Feature | Não no código; risco temporal | Não | Pós-evento; substituir por previsão | Preservar |
+| 14 | `temp_min_c` | float | Clima | Mínimo dos registros de temperatura no intervalo. | °C | Feature | Não no código; risco temporal | Não | Pós-evento; substituir por previsão | Preservar |
+| 15 | `humidity_avg_pct` | float | Clima | Média dos registros de umidade no intervalo. | % | Feature | Não no código; risco temporal | Não | Pós-evento; substituir por previsão | Preservar |
+| 16 | `precip_total_mm` | float | Clima | Soma dos registros de chuva no intervalo. | mm | Feature | Não no código; risco temporal | Não | Pós-evento; substituir por previsão | Preservar |
+| 17 | `temp_avg_c_known` | bool | Qualidade / clima | Indica se havia ao menos um valor de temperatura para calcular a média. | verdadeiro/falso | Feature | Não no código; acompanha clima observado | Não | Pós-evento ou conhecida para a previsão usada | Preservar |
+| 18 | `temp_max_c_known` | bool | Qualidade / clima | Indica disponibilidade de temperatura para o máximo; é calculada com a mesma condição de `temp_avg_c_known`. | verdadeiro/falso | Feature | Não no código; acompanha clima observado | Não | Pós-evento ou conhecida para a previsão usada | Preservar |
+| 19 | `temp_min_c_known` | bool | Qualidade / clima | Indica disponibilidade de temperatura para o mínimo; é calculada com a mesma condição de `temp_avg_c_known`. | verdadeiro/falso | Feature | Não no código; acompanha clima observado | Não | Pós-evento ou conhecida para a previsão usada | Preservar |
+| 20 | `humidity_avg_pct_known` | bool | Qualidade / clima | Indica se havia ao menos um valor de umidade no intervalo. | verdadeiro/falso | Feature | Não no código; acompanha clima observado | Não | Pós-evento ou conhecida para a previsão usada | Preservar |
+| 21 | `precip_total_mm_known` | bool | Qualidade / clima | Indica se havia ao menos um registro de chuva no intervalo. | verdadeiro/falso | Feature | Não no código; acompanha clima observado | Não | Pós-evento ou conhecida para a previsão usada | Preservar |
+| 22 | `start_grass_height_avg_cm` | float | Pastagem | Altura média medida no começo do intervalo. | cm | Feature | Não | Não | Pré-evento | Preservar |
+| 23 | `end_grass_height_avg_cm` | float | Alvo | Altura média medida no fim do intervalo. | cm | Alvo | Sim se usada como feature; é removida de `X` | Não | Pós-evento | Preservar; é necessária para treinamento e avaliação |
+| 24 | `start_grass_height_avg_cm_inferred` | bool | Qualidade / pastagem | Indica inferência da altura inicial. No construtor de eventos efetivo, a altura vem da medição e a flag é `False`. | verdadeiro/falso | Feature | Não | Não | Pré-evento | Preservar |
+| 25 | `end_grass_height_avg_cm_inferred` | bool | Qualidade / pastagem | Indica inferência da altura final. No construtor efetivo, a flag é `False`. | verdadeiro/falso | Excluída | Sim — informação associada ao alvo | Não | Pós-evento | Preservar |
+| 26 | `start_bovine_total_weight_kg_inferred` | bool | Qualidade / rebanho | Indica se algum peso usado no total inicial foi inferido. A consulta histórica possui ressalvas descritas em `docs/dataset_construction.md`. | verdadeiro/falso | Feature | Não no código; a consulta pode usar peso posterior ao início | Sim | Pré-evento com ressalva | Preservar |
+| 27 | `end_bovine_total_weight_kg_inferred` | bool | Qualidade / rebanho | Indica se algum peso usado no total final foi inferido. | verdadeiro/falso | Excluída | Sim — depende do estado final | Sim | Pós-evento | Preservar |
+| 28 | `start_bovine_total_weight_kg_inferred_fraction` | float | Qualidade / rebanho | Fração dos pesos efetivamente usados no total inicial que foram marcados como inferidos. | proporção [0, 1] | Feature | Não no código; mesma ressalva temporal do peso inicial | Sim | Pré-evento com ressalva | Preservar |
+| 29 | `end_bovine_total_weight_kg_inferred_fraction` | float | Qualidade / rebanho | Fração dos pesos usados no total final marcados como inferidos. | proporção [0, 1] | Excluída | Sim — depende do estado final | Sim | Pós-evento | Preservar |
+| 30 | `start_bovine_total_weight_kg_age_hours` | float | Qualidade / rebanho | Média da distância temporal absoluta entre o início e os registros de peso usados. | h | Feature | Não no código; pode refletir medição posterior ao início | Sim | Pré-evento com ressalva | Preservar |
+| 31 | `end_bovine_total_weight_kg_age_hours` | float | Qualidade / rebanho | Média da distância temporal absoluta entre o fim e os pesos usados. | h | Excluída | Sim — depende do estado final | Sim | Pós-evento | Preservar |
+| 32 | `start_bovine_count` | int | Rebanho / ocupação | Número de bovinos com intervalo de permanência ativo no piquete no início. | bovinos | Feature | Não | Sim | Pré-evento | Preservar |
+| 33 | `end_bovine_count` | int | Rebanho / ocupação | Número de bovinos presentes no piquete no fim. | bovinos | Excluída | Sim — estado final | Sim | Pós-evento | Preservar |
+| 34 | `start_bovine_total_weight_kg` | float | Rebanho / ocupação | Soma dos pesos disponíveis para os bovinos presentes no início. | kg | Feature | Não no código; pode usar medição posterior ao início | Sim | Pré-evento com ressalva | Preservar |
+| 35 | `end_bovine_total_weight_kg` | float | Rebanho / ocupação | Soma dos pesos disponíveis para os bovinos presentes no fim. | kg | Excluída | Sim — estado final | Sim | Pós-evento | Preservar |
+| 36 | `delta_bovine_total_weight_kg` | float | Rebanho / derivada | `end_bovine_total_weight_kg - start_bovine_total_weight_kg`. | kg | Excluída | Sim — usa peso final | Sim | Pós-evento | Preservar |
+| 37 | `delta_bovine_mean_weight_kg` | float | Rebanho / derivada | Diferença entre os pesos médios por bovino no fim e no início; nula quando alguma contagem é zero. | kg/bovino | Excluída | Sim — usa estado final | Sim | Pós-evento | Preservar |
+| 38 | `delta_bovine_total_weight_kg_per_day` | float | Rebanho / derivada | Delta de peso total dividido pela duração em dias. | kg/dia | Excluída | Sim — usa peso final | Sim | Pós-evento | Preservar |
+| 39 | `during_entry_bovine_count` | int | Movimentação | Quantidade de bovinos distintos cuja entrada ocorreu em `(início, fim]`. | bovinos | Feature | Não no código; risco temporal se a movimentação não for planejada | Sim | Planejada ou pós-evento | Preservar |
+| 40 | `during_exit_bovine_count` | int | Movimentação | Quantidade de bovinos distintos cuja saída ocorreu em `(início, fim]`. | bovinos | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 41 | `during_entry_total_weight_kg` | float | Movimentação / peso | Soma dos pesos associados aos registros de entrada no intervalo. | kg | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 42 | `during_exit_total_weight_kg` | float | Movimentação / peso | Soma dos pesos associados aos registros de saída no intervalo. | kg | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 43 | `during_entry_total_weight_kg_inferred` | bool | Qualidade / movimentação | Indica se algum peso de entrada usado foi inferido. | verdadeiro/falso | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 44 | `during_exit_total_weight_kg_inferred` | bool | Qualidade / movimentação | Indica se algum peso de saída usado foi inferido. | verdadeiro/falso | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 45 | `during_entry_total_weight_kg_inferred_fraction` | float | Qualidade / movimentação | Fração dos pesos de entrada usados que foram inferidos. | proporção [0, 1] | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 46 | `during_exit_total_weight_kg_inferred_fraction` | float | Qualidade / movimentação | Fração dos pesos de saída usados que foram inferidos. | proporção [0, 1] | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 47 | `during_entry_total_weight_kg_age_hours` | float | Qualidade / movimentação | Média da distância temporal absoluta entre cada entrada e o peso usado. | h | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 48 | `during_exit_total_weight_kg_age_hours` | float | Qualidade / movimentação | Média da distância temporal absoluta entre cada saída e o peso usado. | h | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 49 | `avg_seconds_from_start_to_entry` | float | Tempo / movimentação | Média de `instante de entrada - início` para entradas no intervalo. | s | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 50 | `avg_seconds_from_start_to_exit` | float | Tempo / movimentação | Média de `instante de saída - início` para saídas no intervalo. | s | Feature | Não no código; risco temporal | Sim | Planejada ou pós-evento | Preservar |
+| 51 | `avg_seconds_from_end_to_entry` | float | Tempo / movimentação | Média de `fim - instante de entrada` para entradas no intervalo. | s | Feature | Não no código; depende do fim e da entrada | Sim | Planejada ou pós-evento | Preservar |
+| 52 | `avg_seconds_from_end_to_exit` | float | Tempo / movimentação | Média de `fim - instante de saída` para saídas no intervalo. | s | Feature | Não no código; depende do fim e da saída | Sim | Planejada ou pós-evento | Preservar |
+| 53 | `avg_time_bovine_in_start_segment_seconds` | float | Permanência / ocupação | Para bovinos presentes no início, média do tempo de sobreposição com o piquete-alvo durante o evento. | s/bovino | Feature | Não no código; usa todo o intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 54 | `avg_time_bovine_in_during_entry_segment_seconds` | float | Permanência / ocupação | Para bovinos que entraram durante o evento, média do tempo no piquete-alvo. | s/bovino | Feature | Não no código; usa todo o intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 55 | `avg_time_bovine_in_during_exit_segment_seconds` | float | Permanência / ocupação | Para bovinos que saíram durante o evento, média do tempo no piquete-alvo. | s/bovino | Feature | Não no código; usa todo o intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 56 | `avg_time_bovine_in_end_segment_seconds` | float | Permanência / ocupação | Para bovinos presentes no fim, média do tempo no piquete-alvo durante o evento. | s/bovino | Feature | Não no código; usa grupo conhecido no fim | Sim | Planejada ou pós-evento | Preservar |
+| 57 | `extra_paddocks_count` | int | Piquetes adicionais | Número de outros piquetes com alguma sobreposição de permanência de bovinos durante o evento. | piquetes | Feature | Não no código; seleção observada no intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 58 | `extra_paddocks_total_size_m2` | float | Piquetes adicionais | Soma das áreas cadastrais dos piquetes adicionais usados. | m² | Feature | Não no código; depende das áreas usadas | Sim | Planejada ou pós-evento | Preservar |
+| 59 | `extra_paddocks_initial_grass_height_avg_cm` | float | Piquetes adicionais / pastagem | Média das alturas estimadas ou observadas dos piquetes adicionais no início. | cm | Feature | Não no código; a escolha dos extras vem do intervalo observado | Sim | Planejada ou pós-evento | Preservar |
+| 60 | `extra_paddocks_terminal_grass_height_avg_cm` | float | Piquetes adicionais / pastagem | Média das alturas estimadas ou observadas dos piquetes adicionais no fim. | cm | Excluída | Sim — informação terminal | Sim | Pós-evento | Preservar |
+| 61 | `extra_paddocks_used_avg_seconds` | float | Piquetes adicionais / permanência | Nome sugere apenas extras, mas o código calcula a média, por bovino, da sobreposição total em todos os piquetes durante o evento. | s/bovino | Feature | Não no código; risco temporal e semântica a revisar | Sim | Planejada ou pós-evento | Preservar; marcar definição para revisão |
+| 62 | `bovines_per_paddocks_time_weighted` | float | Ocupação ponderada | Soma de bovino-segundos no piquete-alvo dividida pela duração; equivale ao número médio de bovinos presentes. | bovinos equivalentes | Feature | Não no código; usa todo o intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 63 | `bovines_per_size_time_weighted` | float | Ocupação ponderada | `bovines_per_paddocks_time_weighted / size_m2`. | bovinos/m² | Feature | Não no código; usa todo o intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 64 | `bovine_weight_per_paddock_time_weighted` | float | Ocupação ponderada | Soma de peso × segundos no piquete-alvo dividida pela duração; usa o peso consultado no início. | kg equivalentes | Feature | Não no código; usa permanência de todo o intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 65 | `bovine_weight_per_size_time_weighted` | float | Ocupação ponderada | `bovine_weight_per_paddock_time_weighted / size_m2`. | kg/m² | Feature | Não no código; usa todo o intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 66 | `during_entry_bovine_count_known` | bool | Qualidade / movimentação | Indica disponibilidade da contagem de entradas; o construtor efetivo a define como `True`. | verdadeiro/falso | Feature | Não no código; acompanha movimentação do intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 67 | `during_exit_bovine_count_known` | bool | Qualidade / movimentação | Indica disponibilidade da contagem de saídas; o construtor efetivo a define como `True`. | verdadeiro/falso | Feature | Não no código; acompanha movimentação do intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 68 | `during_entry_total_weight_kg_known` | bool | Qualidade / movimentação | Indica se o peso total de entrada é conhecido; é `True` quando não há entradas ou ao menos um peso foi usado. | verdadeiro/falso | Feature | Não no código; acompanha movimentação do intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 69 | `during_exit_total_weight_kg_known` | bool | Qualidade / movimentação | Indica se o peso total de saída é conhecido; é `True` quando não há saídas ou ao menos um peso foi usado. | verdadeiro/falso | Feature | Não no código; acompanha movimentação do intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 70 | `avg_seconds_from_start_to_entry_known` | bool | Qualidade / movimentação | Indica existência de ao menos uma entrada para o deslocamento desde o início. | verdadeiro/falso | Feature | Não no código; acompanha evento observado | Sim | Planejada ou pós-evento | Preservar |
+| 71 | `avg_seconds_from_start_to_exit_known` | bool | Qualidade / movimentação | Indica existência de ao menos uma saída para o deslocamento desde o início. | verdadeiro/falso | Feature | Não no código; acompanha evento observado | Sim | Planejada ou pós-evento | Preservar |
+| 72 | `avg_seconds_from_end_to_entry_known` | bool | Qualidade / movimentação | Indica existência de ao menos uma entrada para o deslocamento até o fim. | verdadeiro/falso | Feature | Não no código; acompanha evento observado | Sim | Planejada ou pós-evento | Preservar |
+| 73 | `avg_seconds_from_end_to_exit_known` | bool | Qualidade / movimentação | Indica existência de ao menos uma saída para o deslocamento até o fim. | verdadeiro/falso | Feature | Não no código; acompanha evento observado | Sim | Planejada ou pós-evento | Preservar |
+| 74 | `avg_time_bovine_in_start_segment_seconds_known` | bool | Qualidade / permanência | Indica se foi possível calcular a permanência média do grupo presente no início. | verdadeiro/falso | Feature | Não no código; usa todo o intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 75 | `avg_time_bovine_in_during_entry_segment_seconds_known` | bool | Qualidade / permanência | Indica se foi possível calcular a permanência média do grupo que entrou. | verdadeiro/falso | Feature | Não no código; usa todo o intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 76 | `avg_time_bovine_in_during_exit_segment_seconds_known` | bool | Qualidade / permanência | Indica se foi possível calcular a permanência média do grupo que saiu. | verdadeiro/falso | Feature | Não no código; usa todo o intervalo | Sim | Planejada ou pós-evento | Preservar |
+| 77 | `avg_time_bovine_in_end_segment_seconds_known` | bool | Qualidade / permanência | Indica se foi possível calcular a permanência média do grupo presente no fim. | verdadeiro/falso | Feature | Não no código; usa grupo conhecido no fim | Sim | Planejada ou pós-evento | Preservar |
+
+## Colunas efetivamente removidas antes do treinamento
+
+A implementação histórica forma o conjunto completo com 60 features após remover:
+
+`user_id`, `pasturage_event_id`, `end_grass_height_avg_cm`, `end_grass_height_avg_cm_inferred`, `snapshot_type`, `snapshot_progress`, `snapshot_cutoff_at`, `end_bovine_count`, `end_bovine_total_weight_kg`, `end_bovine_total_weight_kg_inferred`, `end_bovine_total_weight_kg_inferred_fraction`, `end_bovine_total_weight_kg_age_hours`, `delta_bovine_total_weight_kg`, `delta_bovine_mean_weight_kg`, `delta_bovine_total_weight_kg_per_day` e `extra_paddocks_terminal_grass_height_avg_cm`.
+
+`id` e `pasturage_event_id` não integram o catálogo tipado de features; a repetição de `pasturage_event_id` na lista de exclusão funciona como defesa explícita. O alvo também é removido de `X` independentemente dessa lista.
+
+## Features restantes na ablação
+
+Depois da exclusão por vazamento/proxy e da regra de ablação, permanecem exatamente:
+
+`paddock_id`, `started_at`, `finished_at`, `temp_avg_c_known`, `temp_max_c_known`, `temp_min_c_known`, `humidity_avg_pct_known`, `precip_total_mm_known`, `start_grass_height_avg_cm_inferred`, `size_m2`, `temp_avg_c`, `temp_max_c`, `temp_min_c`, `humidity_avg_pct`, `precip_total_mm` e `start_grass_height_avg_cm`.
+
+## Pontos que exigem revisão científica
+
+1. A disponibilidade temporal das variáveis retidas não foi verificada por um corte no início do evento. O construtor efetivo calcula uma linha no fim do intervalo e usa clima histórico, movimentações e permanências observadas.
+2. `finished_at` e `duration_seconds` só são pré-evento quando representam um plano informado, mas os valores analíticos foram obtidos a partir do término observado.
+3. A rotina de peso inicial admite registros até o fim do evento na busca do valor mais próximo. A flag de inferência compara o instante usado com o `cutoff` final, não com o instante inicial; portanto, um peso posterior ao início pode não ser marcado como inferido.
+4. `extra_paddocks_used_avg_seconds` não implementa literalmente o que o nome sugere. A definição acima segue o código; nome e interpretação devem ser confirmados antes da versão final do artigo.
