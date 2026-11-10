@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "Ao utilizar o código científico, cite este software e identifique a versão ou commit utilizado."
+type: software
+title: "FarmNote — predição da altura futura do capim"
+authors:
+  - family-names: "Santana"
+    given-names: "Oscar Borges Faleta"
+    affiliation: "Instituto Federal de Educação, Ciência e Tecnologia Baiano — Campus Catu"
+    email: "oscar.borgesfs@gmail.com"
+version: 0.1.0
+license: Apache-2.0
+repository-code: "https://github.com/oscarbfs/farmnote_grass_height_prediction"
+abstract: "Artefato científico de pré-processamento, treinamento, avaliação e interpretação de modelos para a altura final média do capim em eventos de pastejo. A licença aqui indicada descreve o software; os dados e suas pendências de direitos de terceiros são documentados separadamente."

@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=75", "wheel"]
+requires = ["setuptools>=77.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,6 +7,11 @@ name = "farmnote-grass-height-prediction"
 version = "0.1.0"
 description = "Reproducible machine-learning experiments for FarmNote grass-height prediction"
 readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [
+  {name = "Oscar Borges Faleta Santana", email = "oscar.borgesfs@gmail.com"},
+]
 requires-python = ">=3.11,<3.13"
 dependencies = [
   "joblib==1.5.1",
@@ -23,6 +28,9 @@ dependencies = [
 dev = [
   "pytest==8.4.2",
 ]
+
+[project.urls]
+Repository = "https://github.com/oscarbfs/farmnote_grass_height_prediction"
 
 [tool.setuptools.packages.find]
 where = ["src"]

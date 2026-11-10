@@ -1,116 +1,60 @@
 # Dados
 
-## O que este repositório espera
+O pipeline usa `data/pasturages_anonymized.csv`, com 67 linhas e 77 colunas.
+Cada linha representa o intervalo entre duas medições de altura no mesmo
+piquete. O alvo é `end_grass_height_avg_cm`, em centímetros.
+O [dicionário](data_dictionary.md) descreve tipos, unidades e uso das colunas.
 
-O pipeline público parte do **dataset analítico**, e não dos registros operacionais brutos. O arquivo esperado é:
+## Formato
 
-```text
-data/pasturages_anonymized.csv
-```
+- UTF-8, separador `;` e vírgula decimal;
+- cabeçalho na ordem definida em [`data/schema.py`](../src/farmnote_grass_height/data/schema.py);
+- timestamps ISO 8601;
+- booleanos `true`/`false` ou `1`/`0`, sem distinção de maiúsculas;
+- ausentes como campos vazios.
 
-Ele deve conter uma linha por evento de pastejo — o intervalo entre duas medições consecutivas de altura no mesmo piquete — e as 77 colunas, na ordem registrada em [`data_dictionary.md`](data_dictionary.md). Na execução descrita no manuscrito e nos artefatos privados auditados, o conjunto tinha 67 linhas.
+O carregador valida cabeçalho, tipos, identificadores, unicidade dos eventos e
+presença do alvo. As linhas são ordenadas por término, início e ID do evento.
 
-O CSV usa:
+## Pseudônimos e consentimento
 
-- codificação UTF-8;
-- `;` como separador;
-- `,` como separador decimal;
-- cabeçalho completo, com as 77 colunas;
-- timestamps em formato ISO 8601;
-- booleanos `true`/`false` ou `1`/`0`;
-- valores ausentes como campos vazios.
+| Coluna | Padrão |
+|---|---|
+| `id` | `row_NN` |
+| `user_id` | `source_NN` |
+| `paddock_id` | `paddock_NN` |
+| `pasturage_event_id` | `event_NN` |
 
-## Por que os dados brutos não estão aqui
+Os identificadores preservam as relações entre linhas sem distribuir a
+correspondência com os registros operacionais. Datas, áreas e demais valores
+analíticos são preservados. A publicação dos dados da propriedade é consentida
+pelo proprietário, inclusive quando a origem puder ser reconhecida.
+Pseudonimização não significa anonimato irreversível.
 
-Os dados brutos foram coletados pelo aplicativo FarmNote e processados pela API operacional. Eles incluem estruturas e identificadores internos, registros de propriedades, bovinos, movimentações, pesagens, medições, geometria/localização e metadados que não são necessários para executar o experimento público. A aplicação Flutter, a API completa, o banco MongoDB, as configurações do serviço meteorológico e os arquivos de exportação originais não integram esta distribuição.
+## Preparar outra versão
 
-O construtor original também é fortemente acoplado às entidades e aos repositórios privados. A decisão de publicação, portanto, é disponibilizar diretamente o dataset analítico revisado e pseudonimizado. A lógica de construção identificada no código está documentada em [`../docs/dataset_construction.md`](../docs/dataset_construction.md).
-
-## Estado de disponibilidade
-
-A árvore de trabalho contém um **candidato** a dataset público em `pasturages_anonymized.csv`, obtido do dataset analítico — não dos dados brutos — pelo procedimento abaixo. Em 10 de agosto de 2026, verificações locais confirmaram 67 linhas, 77 colunas na ordem esperada, 67 pseudônimos de linha/evento únicos, uma origem pseudonimizada, cinco piquetes pseudonimizados e ausência de UUIDs remanescentes. O SHA-256 do candidato é `c68e057437c380e8f6ef29e053d33f139f8f95df4448c6563b3d9c89130cfeed`.
-
-Essas verificações técnicas **não constituem autorização de publicação**. A pessoa responsável pelos dados ainda deve aprovar o risco de reidentificação descrito em [`../docs/publication_checklist.md`](../docs/publication_checklist.md). Se a aprovação não for concedida, remova o CSV da versão pública e mantenha somente a estrutura/documentação. O repositório não cria dados sintéticos como substituto.
-
-## Licença e atribuição
-
-O arquivo [LICENSE-DATA](../LICENSE-DATA) contém a **Creative Commons
-Attribution 4.0 International (`CC-BY-4.0`)** destinada ao dataset analítico
-`pasturages_anonymized.csv`. O resumo das condições de compartilhamento e
-adaptação está na seção [Licença do README](../README.md#licença).
-
-A atribuição deve preservar os créditos e avisos fornecidos pelos titulares,
-identificar a licença com um link e indicar alterações. Para permitir a
-reprodução científica, registre também a versão ou commit e o hash do arquivo
-usado. A autoria e a fonte a informar ainda precisam ser confirmadas no
-[checklist de publicação](../docs/publication_checklist.md); os pseudônimos
-`source_XX` não identificam os autores para fins de crédito.
-
-A licença dos dados não substitui a autorização de publicação nem a revisão
-do risco residual de reidentificação. Os dados operacionais privados não
-integram esse escopo.
-
-## Pseudonimização prevista
-
-O script `scripts/anonymize_dataset.py` substitui somente os quatro identificadores operacionais:
-
-| Coluna | Forma pública | Relação preservada |
-|---|---|---|
-| `id` | `row_01`, `row_02`, … | unicidade da linha |
-| `user_id` | `source_01`, `source_02`, … | mesma origem entre eventos |
-| `paddock_id` | `paddock_01`, `paddock_02`, … | mesmo piquete entre eventos |
-| `pasturage_event_id` | `event_01`, `event_02`, … | unicidade do evento |
-
-Os pseudônimos são atribuídos de forma determinística a partir da ordenação dos valores existentes no arquivo de entrada. A tabela reversível não é gravada. Todos os demais valores, a ordem das linhas, os ausentes e a ordem das colunas são preservados textualmente.
-
-Essa medida não garante anonimato por si só. Datas exatas, combinação de áreas, contagens, pesos e a descrição da área de estudo podem permitir reidentificação por quem já conhece a operação. A publicação depende de revisão humana desse risco.
-
-## Preparação controlada do arquivo público
-
-Execute o comando somente sobre uma cópia privada do dataset analítico já conferido. Nunca coloque a origem dentro deste repositório.
+Use somente um dataset analítico cuja utilização esteja autorizada. Mantenha
+a origem privada fora deste repositório:
 
 ```bash
-python scripts/anonymize_dataset.py /caminho/privado/training_dataset.csv
+python scripts/anonymize_dataset.py /caminho/privado/training_dataset.csv --output /caminho/publico/dataset.csv
 ```
 
-O destino padrão é `data/pasturages_anonymized.csv`. Para substituir um arquivo público previamente aprovado, é necessário informar explicitamente `--force`.
+O script substitui os quatro identificadores, preserva os demais valores e não
+salva o mapa de correspondência. Para substituir um destino existente, informe
+`--force`. Ele informa hashes da origem e do resultado; não publique o hash da
+origem privada sem necessidade.
 
-O script:
+Uma nova versão pode ser usada com `--dataset`. Treino, avaliação e SHAP devem
+receber o mesmo CSV. Alterações em datas ou valores mudam os dados de entrada
+e podem alterar os resultados.
 
-1. exige correspondência exata com as 77 colunas;
-2. recusa origem vazia;
-3. recusa identificadores ausentes;
-4. não permite usar o mesmo caminho como origem e destino;
-5. não grava o mapeamento entre IDs privados e públicos;
-6. valida os padrões dos quatro pseudônimos;
-7. escreve por arquivo temporário e substituição atômica;
-8. informa hashes SHA-256 da origem e do arquivo público para a cadeia de custódia local.
+## Licença
 
-Não inclua o hash da origem privada em uma publicação sem avaliar se essa impressão digital deve permanecer restrita.
+[CC BY 4.0](../LICENSE-DATA), quanto aos direitos disponíveis sobre o dataset.
+Crédito: Oscar Borges Faleta Santana, FarmNote, lote `2026-06-01_20-44`.
+Weather data provided by [OpenWeather](https://openweathermap.org/).
 
-## Validação antes do treinamento
-
-O carregador público recusa o arquivo quando:
-
-- o conjunto ou a ordem das colunas diverge do esquema;
-- há token booleano, número ou data inválido;
-- algum dos quatro identificadores não segue o padrão público;
-- `id` ou `pasturage_event_id` não é único;
-- o alvo `end_grass_height_avg_cm` está ausente.
-
-O carregador ordena as linhas por `finished_at`, `started_at` e `pasturage_event_id`, reproduzindo a ordenação realizada antes do split histórico.
-
-## O que não deve ser adicionado
-
-Não publique neste diretório:
-
-- planilhas XLSX exportadas pelo aplicativo;
-- CSVs privados ou versões anteriores com UUIDs;
-- dumps de banco, JSONs de modelos ou metadados com IDs internos;
-- nomes de pessoas, propriedades ou animais;
-- coordenadas, endereços ou geometrias;
-- mapas de pseudonimização;
-- credenciais, URLs privadas, tokens ou arquivos `.env`;
-- dados brutos de clima, pesagem, movimentação ou altura.
-
-Se a autorização para disponibilizar o dataset analítico não for concedida, mantenha apenas esta estrutura e registre a indisponibilidade como limitação de reprodutibilidade.
+**A compatibilidade da redistribuição das colunas meteorológicas com CC BY 4.0
+permanece em confirmação.** Consulte [licenças de terceiros](../docs/third_party_licenses.md).
+O consentimento do proprietário não substitui os direitos do provedor.

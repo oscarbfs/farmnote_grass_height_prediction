@@ -14,7 +14,7 @@ Os tipos abaixo são tipos lógicos. Como o arquivo é CSV, todos os valores che
 - **Risco temporal**: a coluna não foi classificada como vazamento pela implementação histórica, mas seu valor foi calculado com observações do decorrer ou do fim do evento. Ela só seria válida numa previsão feita no início se fosse substituída por informação efetivamente planejada ou prevista.
 - **Pseudonimização**: é estável dentro do arquivo, preserva as relações entre linhas e não publica a tabela de correspondência. Não equivale a anonimização irreversível.
 
-As datas são preservadas porque mês, dia da semana, dia do ano e sazonalidade fazem parte do experimento. Elas continuam sendo quase-identificadores e exigem revisão humana antes da publicação.
+As datas são preservadas porque mês, dia da semana, dia do ano e sazonalidade fazem parte do experimento. Elas continuam sendo quase-identificadores. A disponibilização dos dados da propriedade tem consentimento do proprietário, inclusive quando a origem puder ser reconhecida.
 
 ## Colunas
 
@@ -117,4 +117,4 @@ Depois da exclusão por vazamento/proxy e da regra de ablação, permanecem exat
 1. A disponibilidade temporal das variáveis retidas não foi verificada por um corte no início do evento. O construtor efetivo calcula uma linha no fim do intervalo e usa clima histórico, movimentações e permanências observadas.
 2. `finished_at` e `duration_seconds` só são pré-evento quando representam um plano informado, mas os valores analíticos foram obtidos a partir do término observado.
 3. A rotina de peso inicial admite registros até o fim do evento na busca do valor mais próximo. A flag de inferência compara o instante usado com o `cutoff` final, não com o instante inicial; portanto, um peso posterior ao início pode não ser marcado como inferido.
-4. `extra_paddocks_used_avg_seconds` não implementa literalmente o que o nome sugere. A definição acima segue o código; nome e interpretação devem ser confirmados antes da versão final do artigo.
+4. `extra_paddocks_used_avg_seconds` não implementa literalmente o que o nome sugere. Para interpretar essa coluna, use a definição operacional da tabela, que descreve o cálculo efetivo de sobreposição das permanências.

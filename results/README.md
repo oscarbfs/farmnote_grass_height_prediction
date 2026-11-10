@@ -1,23 +1,27 @@
 # Resultados
 
-`reference/` contém uma cópia sanitizada das métricas do lote privado que deu
-origem às tabelas do manuscrito (`2026-06-01_20-44`, versão `1780346691`). IDs de
-usuário, modelos e artefatos, timestamps internos, predições por evento, pipelines
-serializados e metadados categóricos do SHAP foram deliberadamente omitidos.
+`reference/` contém métricas agregadas do lote `2026-06-01_20-44` utilizado
+nas tabelas do artigo. Esses arquivos são referência histórica, não saídas
+de uma nova execução. Identificadores operacionais, modelos privados e
+predições vinculadas aos registros de origem não são distribuídos aqui.
 
-Esses CSVs são **referência histórica**, não evidência de uma nova reprodução.
-Uma execução pública escreve seus próprios artefatos em `results/reproduced/`.
+As execuções completas gravam em `results/reproduced/`; o modo `--smoke`,
+em `results/smoke/`. Essas pastas são ignoradas pelo Git.
 
-## Colunas
+## Métricas
 
-- `train_r2` e `train_rmse`: métricas no subconjunto de treino (54 eventos).
-- `test_r2` e `test_rmse`: métricas no holdout (13 eventos).
-- `legacy_reported_cv_rmse`: valor que os relatórios privados rotularam como
-  “Group CV RMSE”. Sem grupos configurados, o código substituiu essa métrica pelo
-  RMSE do holdout; por isso ela é idêntica a `test_rmse` em todas as linhas.
-- `search_cv_rmse`: RMSE médio real da configuração vencedora dentro do
-  `GridSearchCV` de cinco dobras, recuperado de `cv_results.mean_test_score`.
+- `train_r2` e `train_rmse`: desempenho no treino, com 54 eventos;
+- `test_r2` e `test_rmse`: desempenho no holdout, com 13 eventos;
+- `legacy_reported_cv_rmse`: campo histórico chamado “CV RMSE”, preenchido pelo RMSE do holdout;
+- `search_cv_rmse`: RMSE real da busca de hiperparâmetros com cinco dobras no treino.
 
-O manuscrito ordenou famílias pelo campo legado/holdout. Assim, a ordem publicada
-não é a ordem de `search_cv_rmse`. Consulte `docs/divergences.md` antes de comparar
-uma nova execução.
+O ranking histórico usa holdout. Consulte as
+[notas de interpretação](../docs/divergences.md) antes de comparar novas saídas.
+
+## Licença e crédito
+
+As métricas estão sob [CC BY 4.0](../LICENSE-DATA), quanto aos direitos
+disponíveis sobre esses materiais. Crédito: Oscar Borges Faleta Santana,
+FarmNote, lote `2026-06-01_20-44`.
+As condições dos dados meteorológicos são descritas em
+[licenças de terceiros](../docs/third_party_licenses.md).
