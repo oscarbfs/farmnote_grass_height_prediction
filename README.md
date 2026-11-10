@@ -295,11 +295,39 @@ experimento.
 
 ## Licença
 
-Os repositórios-fonte e o manuscrito não continham uma licença que pudesse ser
-herdada com segurança. Por isso ainda não há arquivo `LICENSE`, e a presença do
-código neste repositório **não concede automaticamente permissão de uso,
-modificação ou redistribuição**. O responsável pelo projeto deve escolher e
-aprovar uma licença antes da publicação.
+O repositório contém dois arquivos de licença, com escopos distintos:
+
+| Material | Licença | Texto integral |
+|---|---|---|
+| Código científico em `src/`, `scripts/` e `tests/` | Apache License 2.0 (`Apache-2.0`) | [LICENSE](LICENSE) |
+| Dataset analítico `data/pasturages_anonymized.csv` | Creative Commons Attribution 4.0 International (`CC-BY-4.0`) | [LICENSE-DATA](LICENSE-DATA) |
+
+A [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) permite uso,
+modificação e redistribuição, inclusive comercial, conforme seus termos. Na
+redistribuição, inclua a licença, preserve os avisos aplicáveis e identifique
+os arquivos modificados; preserve também as atribuições de um arquivo `NOTICE`,
+se ele acompanhar o material de origem.
+
+A [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) permite compartilhar
+e adaptar os dados, inclusive para fins comerciais, conforme seus termos. Ao
+compartilhá-los, dê o crédito exigido, mantenha os avisos fornecidos, indique a
+licença com um link e informe alterações. Não imponha restrições adicionais
+ao exercício dos direitos concedidos. Para rastreabilidade científica, registre
+também a versão ou o commit e o hash do CSV utilizado.
+
+Essas licenças se referem ao artefato científico e não estendem permissões ao
+aplicativo FarmNote, à API privada, ao manuscrito ou aos dados operacionais
+excluídos desta distribuição. As dependências mantêm suas próprias licenças.
+
+A presença dos arquivos de licença não comprova, por si só, a autorização dos
+titulares do código e dos dados nem resolve direitos de terceiros ou questões
+de privacidade. A confirmação da titularidade, as informações de atribuição e
+a aprovação da publicação do CSV continuam no
+[checklist de publicação](docs/publication_checklist.md). O responsável também
+deve confirmar o enquadramento da documentação e das métricas de referência,
+que não estão explicitados nos arquivos de licença. A ausência de licença nas
+fontes privadas, registrada na auditoria original, não deve ser confundida com
+a presença de `LICENSE` e `LICENSE-DATA` neste repositório.
 
 ## Segurança
 

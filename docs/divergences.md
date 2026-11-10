@@ -138,9 +138,11 @@ Um CSV legado em `assets/data/` possui 72 colunas. O DTO e o artefato final de 1
 
 O repositório público adota o esquema final de 77 colunas, que corresponde ao lote dos resultados do manuscrito. O CSV legado não foi copiado.
 
-## 12. Licença ainda não decidida
+## 12. Licenças da distribuição e autorização das fontes
 
-Não foi encontrado arquivo de licença nos repositórios da API, do aplicativo ou no repositório científico original. Nenhuma licença foi escolhida por inferência. Até decisão explícita do titular, a ausência de licença significa que os direitos padrão permanecem reservados; a publicação como software aberto está pendente.
+Na auditoria original, não foi encontrado arquivo de licença nos repositórios da API, do aplicativo ou no repositório científico original. A árvore atual da distribuição científica contém [LICENSE](../LICENSE), com Apache 2.0 para o código, e [LICENSE-DATA](../LICENSE-DATA), com CC BY 4.0 para o dataset analítico. Portanto, a descrição anterior de ausência de licença nesta distribuição estava desatualizada.
+
+Esses arquivos não licenciam automaticamente os projetos privados nem comprovam a autorização de seus titulares para a extração. A confirmação dos direitos sobre o código extraído, o crédito dos dados e a aprovação de sua publicação permanecem no [checklist](publication_checklist.md). O escopo e as condições resumidas estão na seção [Licença do README](../README.md#licença).
 
 ## 13. Escopo do frontend
 
@@ -153,4 +155,4 @@ O Flutter serviu à coleta e exportação de alturas, pesagens e movimentações
 3. Definir formalmente o instante de previsão e a disponibilidade de cada feature.
 4. Confirmar o comportamento efetivo do early stopping a partir do pipeline/log privado, se ainda disponível.
 5. Confirmar a semântica de `extra_paddocks_used_avg_seconds`.
-6. Decidir a licença e obter autorização explícita para o dataset analítico pseudonimizado.
+6. Confirmar com os titulares a aplicação das licenças presentes, completar as informações de atribuição e obter autorização explícita para publicar o dataset analítico pseudonimizado.

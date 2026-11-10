@@ -109,7 +109,7 @@ As fórmulas e decisões que determinam o experimento histórico foram preservad
 
 1. O candidato a dataset possui hash registrado, mas sua inclusão na release ainda depende da aprovação do arquivo pseudonimizado.
 2. O lote histórico armazena o pipeline fora dos JSONs de relatório. Sem esse artefato privado, não foi possível confirmar `best_iteration_`/early stopping do LightGBM.
-3. Não há licença definida nos repositórios de origem; a autorização de código e dados continua pendente.
+3. A auditoria original não encontrou licença nos repositórios de origem. A árvore atual deste repositório contém [LICENSE](../LICENSE) (Apache 2.0, código científico) e [LICENSE-DATA](../LICENSE-DATA) (CC BY 4.0, dataset analítico). Esses arquivos não comprovam a autorização dos titulares das fontes privadas; a confirmação de titularidade e a aprovação da distribuição dos dados continuam no [checklist de publicação](publication_checklist.md).
 4. O hash do manuscrito identifica a cópia analisada, não uma versão editorial futura.
 
 Quando `pasturages_anonymized.csv` for aprovado, registre em documento de release, sem mapa de IDs: hash SHA-256 público, número de linhas/colunas, data da revisão, responsável pela autorização e commit do código usado na reprodução.

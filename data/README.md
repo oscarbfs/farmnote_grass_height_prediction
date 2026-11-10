@@ -32,6 +32,24 @@ A árvore de trabalho contém um **candidato** a dataset público em `pasturages
 
 Essas verificações técnicas **não constituem autorização de publicação**. A pessoa responsável pelos dados ainda deve aprovar o risco de reidentificação descrito em [`../docs/publication_checklist.md`](../docs/publication_checklist.md). Se a aprovação não for concedida, remova o CSV da versão pública e mantenha somente a estrutura/documentação. O repositório não cria dados sintéticos como substituto.
 
+## Licença e atribuição
+
+O arquivo [LICENSE-DATA](../LICENSE-DATA) contém a **Creative Commons
+Attribution 4.0 International (`CC-BY-4.0`)** destinada ao dataset analítico
+`pasturages_anonymized.csv`. O resumo das condições de compartilhamento e
+adaptação está na seção [Licença do README](../README.md#licença).
+
+A atribuição deve preservar os créditos e avisos fornecidos pelos titulares,
+identificar a licença com um link e indicar alterações. Para permitir a
+reprodução científica, registre também a versão ou commit e o hash do arquivo
+usado. A autoria e a fonte a informar ainda precisam ser confirmadas no
+[checklist de publicação](../docs/publication_checklist.md); os pseudônimos
+`source_XX` não identificam os autores para fins de crédito.
+
+A licença dos dados não substitui a autorização de publicação nem a revisão
+do risco residual de reidentificação. Os dados operacionais privados não
+integram esse escopo.
+
 ## Pseudonimização prevista
 
 O script `scripts/anonymize_dataset.py` substitui somente os quatro identificadores operacionais:

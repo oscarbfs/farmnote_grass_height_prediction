@@ -4,11 +4,16 @@ Este checklist é um gate de release. Itens marcados como **bloqueador** devem s
 
 ## 1. Autorização e licença
 
-- [ ] **BLOQUEADOR — licença:** o titular definiu por escrito a licença do código científico.
-- [ ] A compatibilidade dessa licença com scikit-learn, LightGBM, SHAP e demais dependências foi revisada.
-- [ ] O arquivo `LICENSE` corresponde exatamente à decisão do titular; nenhuma licença foi inferida a partir da ausência de licença nos projetos privados.
+Os arquivos presentes são [LICENSE](../LICENSE) (Apache 2.0, código científico) e [LICENSE-DATA](../LICENSE-DATA) (CC BY 4.0, dataset analítico). Sua existência foi verificada; os itens abaixo registram aprovações e verificações que não podem ser presumidas apenas a partir desses arquivos.
+
+- [ ] **BLOQUEADOR — titularidade do código:** o titular confirmou por escrito que pode autorizar a distribuição do código extraído sob Apache 2.0, inclusive das adaptações das fontes privadas.
+- [ ] As obrigações das licenças de scikit-learn, LightGBM, SHAP e demais dependências foram revisadas conforme a forma de distribuição.
+- [ ] O arquivo `LICENSE` corresponde à decisão do titular; os avisos de copyright e atribuição aplicáveis foram incluídos e preservados.
+- [ ] O escopo da licença da documentação e das métricas em `results/reference/` foi confirmado e documentado pelo titular.
+- [ ] **BLOQUEADOR — licença dos dados:** o titular confirmou que pode disponibilizar `data/pasturages_anonymized.csv` sob CC BY 4.0 e que `LICENSE-DATA` corresponde à sua decisão.
+- [ ] O crédito do dataset identifica o titular/autores conforme indicado por eles, a fonte, a licença e os avisos aplicáveis, sem expor identificadores operacionais.
 - [ ] **BLOQUEADOR — dados:** existe autorização explícita para disponibilizar o dataset analítico pseudonimizado.
-- [ ] A autorização cobre finalidade, público, prazo e forma de distribuição.
+- [ ] A autorização é compatível com a CC BY 4.0, inclusive uso comercial, adaptação e caráter irrevogável dos direitos concedidos nos termos da licença; não há promessa de restringir usos já permitidos por ela.
 - [ ] Foi confirmado que o consentimento/autorização não depende de publicar o aplicativo ou a API completos.
 - [ ] Autoria, afiliações, citação sugerida e contato científico foram aprovados.
 

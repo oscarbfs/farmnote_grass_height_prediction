@@ -30,7 +30,7 @@ A discrepância é documentada em [divergences.md](divergences.md). O valor lega
 | Ranqueamento usado no manuscrito | [`evaluation/metrics.py`](../src/farmnote_grass_height/evaluation/metrics.py) | `article_compatible_rank` usa o RMSE de holdout legado; `search_cv_rmse` permanece disponível separadamente |
 | Análise SHAP | [`interpretation/shap_analysis.py`](../src/farmnote_grass_height/interpretation/shap_analysis.py) e [`generate_shap.py`](../scripts/generate_shap.py) | CSV por modelo no espaço processado e agregado, gráfico global e consolidação das dez principais features |
 | Experimento sem movimento/ocupação | Prefixos e exclusões em [`data/features.py`](../src/farmnote_grass_height/data/features.py); entrada em [`run_without_movement.py`](../scripts/run_without_movement.py) | Mesmo protocolo, com 16 features não pertencentes ao grupo retirado |
-| Proveniência e limites de publicação | [provenance.md](provenance.md) e [publication_checklist.md](publication_checklist.md) | Hashes, commits auditados, pendências de licença e autorização do dataset |
+| Proveniência e limites de publicação | [provenance.md](provenance.md) e [publication_checklist.md](publication_checklist.md) | Hashes, commits auditados, licenças presentes e confirmação de titularidade e autorização do dataset |
 
 ## Fluxo executável
 
@@ -127,5 +127,5 @@ Diferenças podem ocorrer por seeds omitidas em algumas factories, versões das 
 - Não há dados operacionais brutos, banco MongoDB, API completa, infraestrutura, autenticação, segredo ou credencial nesta distribuição.
 - Nenhum arquivo Flutter foi copiado. O aplicativo foi consultado apenas para delimitar a coleta; sua lógica de interface não é necessária para executar o experimento sobre o dataset analítico.
 - A disponibilidade temporal de `finished_at`, clima observado no intervalo e features agregadas durante o evento depende do instante operacional pretendido para a previsão. O código histórico foi preservado, mas esses campos estão marcados para revisão científica no dicionário e em [divergences.md](divergences.md).
-- A licença continua pendente de decisão do titular; a ausência de uma licença explícita não concede permissão de reutilização.
+- O código científico possui [LICENSE](../LICENSE) (Apache 2.0) e o dataset analítico possui [LICENSE-DATA](../LICENSE-DATA) (CC BY 4.0). A confirmação da autorização dos titulares e das informações de atribuição continua no [checklist de publicação](publication_checklist.md).
 - A autorização para disponibilizar o CSV pseudonimizado continua sendo uma etapa humana obrigatória, mesmo depois das verificações técnicas.
