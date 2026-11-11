@@ -1,5 +1,11 @@
 # Dicionário de dados do conjunto analítico
 
+<a href="https://openweathermap.org/"><img src="../assets/openweather/openweather-logo.png" alt="OpenWeather" width="180"></a>
+
+**Weather data provided by [OpenWeather](https://openweathermap.org/).**
+O dataset descrito neste dicionário é uma base derivada sob [ODbL 1.0](../LICENSE-DATA),
+com as transformações e a atribuição detalhadas em [NOTICE](NOTICE).
+
 ## Escopo e convenções
 
 Este dicionário descreve o esquema de **77 colunas** exportado pelo DTO `PasturageDTO` e presente no artefato analítico usado na execução de 1º de junho de 2026. A unidade de análise é um evento de pastejo: o intervalo entre duas medições consecutivas de altura no mesmo piquete. O alvo é `end_grass_height_avg_cm`.

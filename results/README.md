@@ -1,5 +1,11 @@
 # Resultados
 
+<a href="https://openweathermap.org/"><img src="../assets/openweather/openweather-logo.png" alt="OpenWeather" width="180"></a>
+
+**Weather data provided by [OpenWeather](https://openweathermap.org/).**
+Os experimentos utilizam uma base derivada disponibilizada sob
+[ODbL 1.0](../LICENSE-DATA).
+
 `reference/` contém métricas agregadas do lote `2026-06-01_20-44` utilizado
 nas tabelas do artigo. Esses arquivos são referência histórica, não saídas
 de uma nova execução. Identificadores operacionais, modelos privados e
@@ -20,8 +26,11 @@ O ranking histórico usa holdout. Consulte as
 
 ## Licença e crédito
 
-As métricas estão sob [CC BY 4.0](../LICENSE-DATA), quanto aos direitos
+As métricas agregadas de referência estão sob [CC BY 4.0](../LICENSE-RESULTS), quanto aos direitos
 disponíveis sobre esses materiais. Crédito: Oscar Borges Faleta Santana,
 FarmNote, lote `2026-06-01_20-44`.
-As condições dos dados meteorológicos são descritas em
+Essa licença das métricas não substitui a ODbL do dataset. Novos gráficos SHAP
+incluem crédito e logo OpenWeather; mantenha a atribuição ao reutilizá-los.
+Arquivos gerados anteriormente precisam receber a mesma atribuição antes da
+divulgação. As condições dos dados meteorológicos são descritas em
 [licenças de terceiros](../docs/third_party_licenses.md).

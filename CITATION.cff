@@ -10,4 +10,4 @@ authors:
 version: 0.1.0
 license: Apache-2.0
 repository-code: "https://github.com/oscarbfs/farmnote_grass_height_prediction"
-abstract: "Artefato científico de pré-processamento, treinamento, avaliação e interpretação de modelos para a altura final média do capim em eventos de pastejo. A licença aqui indicada descreve o software; os dados e suas pendências de direitos de terceiros são documentados separadamente."
+abstract: "Artefato científico de pré-processamento, treinamento, avaliação e interpretação de modelos para a altura final média do capim em eventos de pastejo. A licença Apache 2.0 aqui indicada descreve o software. O dataset está sob ODbL 1.0 e contém dados meteorológicos derivados do OpenWeather, com atribuição e condições próprias."

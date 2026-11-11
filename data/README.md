@@ -1,5 +1,11 @@
 # Dados
 
+<a href="https://openweathermap.org/"><img src="../assets/openweather/openweather-logo.png" alt="OpenWeather" width="180"></a>
+
+**Weather data provided by [OpenWeather](https://openweathermap.org/).**
+Esta base contém dados meteorológicos agregados derivados do OpenWeather e é
+disponibilizada sob [ODbL 1.0](../LICENSE-DATA).
+
 O pipeline usa `data/pasturages_anonymized.csv`, com 67 linhas e 77 colunas.
 Cada linha representa o intervalo entre duas medições de altura no mesmo
 piquete. O alvo é `end_grass_height_avg_cm`, em centímetros.
@@ -51,10 +57,17 @@ e podem alterar os resultados.
 
 ## Licença
 
-[CC BY 4.0](../LICENSE-DATA), quanto aos direitos disponíveis sobre o dataset.
+[ODbL 1.0](../LICENSE-DATA) para a base analítica, com o [aviso de atribuição](NOTICE).
 Crédito: Oscar Borges Faleta Santana, FarmNote, lote `2026-06-01_20-44`.
 Weather data provided by [OpenWeather](https://openweathermap.org/).
 
-**A compatibilidade da redistribuição das colunas meteorológicas com CC BY 4.0
-permanece em confirmação.** Consulte [licenças de terceiros](../docs/third_party_licenses.md).
-O consentimento do proprietário não substitui os direitos do provedor.
+As colunas de temperatura, umidade e precipitação são médias, extremos ou
+acumulados por evento, com indicadores de disponibilidade. Essas transformações
+e a combinação com registros de pastagem não removem a origem meteorológica.
+
+Ao compartilhar o CSV, preserve a licença e os avisos, dê crédito ao OpenWeather
+com link e logo e identifique suas alterações. Bases derivadas distribuídas
+publicamente devem cumprir as condições de compartilhamento e acesso da ODbL.
+Mantenha o crédito visível nos produtos que usem os dados. A ODbL rege a base;
+direitos sobre conteúdos individuais e marcas continuam aplicáveis. Consulte
+[licenças de terceiros](../docs/third_party_licenses.md).

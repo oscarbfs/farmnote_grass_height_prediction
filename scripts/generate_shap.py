@@ -63,8 +63,20 @@ def _save_plot(rows: list[dict], output: Path, model_label: str) -> None:
         [float(row["mean_abs_shap"]) for row in reversed(top)],
     )
     axis.set_xlabel("mean(|SHAP value|)")
-    axis.set_title(f"Global feature importance — {model_label}")
+    axis.set_title(f"Global feature importance\n{model_label}", fontsize=11)
     figure.tight_layout()
+    # Keep source attribution visible on exported images, not only in the README.
+    figure.subplots_adjust(bottom=0.15)
+    logo_path = Path(__file__).resolve().parents[1] / "assets" / "openweather" / "openweather-logo.png"
+    logo_axis = figure.add_axes((0.02, 0.02, 0.13, 0.09))
+    logo_axis.imshow(plt.imread(logo_path))
+    logo_axis.set_axis_off()
+    figure.text(
+        0.18, 0.045,
+        "Weather data provided by OpenWeather | https://openweathermap.org/\n"
+        "Source database: ODbL 1.0 | https://opendatacommons.org/licenses/odbl/1-0/",
+        fontsize=7, va="center",
+    )
     figure.savefig(output, dpi=180)
     plt.close(figure)
 

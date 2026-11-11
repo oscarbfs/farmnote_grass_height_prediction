@@ -1,6 +1,6 @@
 # Licenças de terceiros
 
-O código e a documentação deste repositório usam Apache 2.0. As dependências
+O código e a documentação próprios deste repositório usam Apache 2.0. As dependências
 instaladas por `requirements.txt` mantêm suas próprias licenças; seus códigos
 e binários não são incorporados à árvore Git do projeto.
 
@@ -24,19 +24,47 @@ dos componentes efetivamente empacotados.
 
 ## Dados meteorológicos
 
-Weather data provided by [OpenWeather](https://openweathermap.org/).
+<a href="https://openweathermap.org/"><img src="../assets/openweather/openweather-logo.png" alt="OpenWeather" width="180"></a>
+
+**Weather data provided by [OpenWeather](https://openweathermap.org/).**
 As colunas de temperatura, umidade e precipitação foram agregadas a partir
 de dados obtidos pelo plano estudantil OpenWeather.
 
-As [condições da iniciativa estudantil](https://docs.openweather.co.uk/our-initiatives/student-initiative)
-descrevem uso acadêmico e restrições de uso comercial. O
-[guia de licenciamento](https://openweathermap.org/guide) apresenta condições
-para dados e bancos derivados. Esses termos não devem ser substituídos pela
-licença escolhida para o restante do dataset.
+O dataset analítico é distribuído como base derivada sob
+[ODbL 1.0](../LICENSE-DATA), com o [aviso de atribuição](../data/NOTICE).
+O [guia OpenWeather](https://openweathermap.org/guide) distingue a apresentação
+de resultados da redistribuição de uma base que combina ou transforma dados
+meteorológicos. A agregação em intervalos não elimina a origem dos dados.
 
-**A compatibilidade da redistribuição das colunas meteorológicas com CC BY 4.0
-aguarda resposta do OpenWeather à consulta enviada ao suporte.**
-`LICENSE-DATA` não concede direitos que pertençam ao OpenWeather.
-Antes de redistribuir o CSV sob essa licença,
-confirme os termos aplicáveis à coleta e as obrigações de atribuição e
-compartilhamento de dados derivados.
+Ao redistribuir o CSV, mantenha a licença e os avisos e descreva alterações.
+Bases derivadas utilizadas publicamente devem cumprir o compartilhamento
+pela mesma licença e as obrigações de acesso da ODbL, inclusive disponibilizar
+a base ou as alterações em formato legível por máquina conforme a seção 4.6.
+A ODbL permite uso comercial e não comercial sob suas condições; não rege o
+código utilizado para operar a base nem substitui direitos dos conteúdos
+individuais ou de marcas.
+
+O OpenWeather também indica [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+para mapas, APIs e outros produtos, conforme o material e os termos aplicáveis.
+Isso não altera a licença Apache 2.0 do código próprio do FarmNote. As métricas
+agregadas em `results/reference/` conservam [CC BY 4.0](../LICENSE-RESULTS)
+quanto aos direitos disponíveis; a base de origem continua sob ODbL.
+
+## Atribuição visível
+
+Use a frase **Weather data provided by OpenWeather**, com link para
+`https://openweathermap.org/` e o logo oficial. O crédito deve estar visível
+na apresentação dos dados ou da funcionalidade derivada, não apenas em páginas
+de termos, privacidade ou licenças. O README principal e os documentos dos
+dados e resultados incluem esse crédito. Novos gráficos SHAP também o incluem.
+Gráficos exportados anteriormente precisam receber a atribuição antes de serem
+divulgados. O logo original e sua origem estão em
+[assets/openweather/](../assets/openweather/).
+
+Ao compartilhar resultados, inclua também a referência à base meteorológica
+e à ODbL, conforme a seção 4.3 da licença. A licença de uma imagem ou de um texto
+resultante não substitui essas obrigações nem relicencia a base original.
+
+Referências: [FAQ de atribuição OpenWeather](https://openweathermap.org/faq),
+[ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/) e
+[termos de venda](https://openweather.co.uk/api/files/file/OpenWeather_T%26C_of_sale.pdf).

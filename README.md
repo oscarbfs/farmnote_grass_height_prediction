@@ -1,5 +1,11 @@
 # FarmNote — predição da altura futura do capim
 
+<a href="https://openweathermap.org/"><img src="assets/openweather/openweather-logo.png" alt="OpenWeather" width="180"></a>
+
+**Weather data provided by [OpenWeather](https://openweathermap.org/).**
+O dataset contém dados meteorológicos agregados e integra uma base derivada
+disponibilizada sob [ODbL 1.0](LICENSE-DATA).
+
 Código de aprendizado de máquina do FarmNote para estimar
 `end_grass_height_avg_cm`: a altura final média do capim, em centímetros, no
 intervalo entre duas medições consecutivas no mesmo piquete.
@@ -134,20 +140,27 @@ Consulte [formato e preparação dos dados](data/README.md).
 
 | Material | Licença |
 |---|---|
-| Código e documentação | Apache 2.0 — [LICENSE](LICENSE) e [NOTICE](NOTICE) |
-| Dataset e métricas de referência | CC BY 4.0 — [LICENSE-DATA](LICENSE-DATA), limitada aos direitos disponíveis sobre esses materiais |
+| Código e documentação próprios | Apache 2.0 — [LICENSE](LICENSE) e [NOTICE](NOTICE) |
+| Dataset `data/pasturages_anonymized.csv` como base de dados | ODbL 1.0 — [LICENSE-DATA](LICENSE-DATA) e [aviso dos dados](data/NOTICE) |
+| Métricas agregadas em `results/reference/` | CC BY 4.0 — [LICENSE-RESULTS](LICENSE-RESULTS), quanto aos direitos disponíveis sobre esses materiais |
 
 Apache 2.0 permite uso, modificação e redistribuição conforme seus termos.
 Preserve a licença e os avisos aplicáveis e identifique modificações.
-CC BY 4.0 exige atribuição, referência à licença e indicação de alterações.
+ODbL 1.0 permite usar, adaptar e redistribuir a base, inclusive comercialmente,
+com atribuição e preservação dos avisos. Bases derivadas disponibilizadas
+publicamente devem cumprir o compartilhamento pela mesma licença e as
+obrigações de acesso da ODbL. A licença da base não substitui eventuais
+direitos sobre seus conteúdos individuais.
 
-**A redistribuição das colunas meteorológicas sob CC BY 4.0 ainda depende de
-confirmação dos termos do plano estudantil OpenWeather.** Essa licença não
-substitui direitos do provedor. Weather data provided by
-[OpenWeather](https://openweathermap.org/). Veja
-[licenças de terceiros](docs/third_party_licenses.md).
+Ao redistribuir o CSV, acompanhe-o de `LICENSE-DATA`, `data/NOTICE` e do crédito
+OpenWeather com link e logo. Em produtos e imagens que usem os dados ou
+funcionalidades derivadas, mantenha a atribuição visível junto ao uso.
+O script de SHAP inclui crédito, endereço do provedor e logo nos novos gráficos.
+As métricas de referência conservam CC BY 4.0 e seus créditos; isso não permite
+relicenciar o dataset de origem. Veja [licenças de terceiros](docs/third_party_licenses.md).
 
-As dependências mantêm suas próprias licenças. As licenças deste repositório
+As dependências e o logo OpenWeather mantêm seus próprios direitos e avisos.
+As licenças deste repositório
 não abrangem o aplicativo, a API privada, o artigo ou dados operacionais externos.
 
 ## Crédito e citação
